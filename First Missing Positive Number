@@ -20,3 +20,86 @@ int firstMissing(int arr[], int n)
 }
 
 // Create a new array of only positive numbers,sort it -> Find the first missing positive array.
+
+
+Optimised
+
+Call a function that will segregate the positive integer to the negative integers i.e move all non-positive elements to the right side, and return the index at which non-positive integers START.
+Now we can ignore non-positive elements and consider only the part of the array which contains all positive elements. We traverse the array containing all positive numbers. To mark the presence of an element ARR[i], we change the sign of value at index ARR[i] to negative i.e mark the presence of element 1 by making the element of array at index 1 to negative, given that the index lies in that segment of positive elements.
+To find the smallest positive missing element, we traverse the positive elements array again and print the first index which has positive value. In case all elements are negative, our index is SIZE - 1. We subtract 1 from the index and that would be the answer.
+Time Complexity
+O(N), where N is the length of the array.
+
+ 
+
+Since we are traversing the array, iterating all items once therefore the time complexity here grows by the order O(N).
+
+Space Complexity
+O(1), as we are not using any extra space.
+
+Code
+C++ (g++ 5.4)
+/*
+   Time Complexity : O(N)
+   Space Complexity: O(1)
+   
+   Where N is the length of the array.
+*/
+
+#include <cstdlib>
+
+int segregate(int arr[], int size) 
+{
+    int j = 0;
+
+    for (int i = 0; i < size; i++) 
+    {
+        if (arr[i] > 0) 
+        {
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+
+            // Increment count of positive integers.
+            j++;
+        }
+    }
+
+    return j;
+}
+
+int findMissingPositive(int arr[], int size) 
+{
+    // Mark arr[i] as visited by making arr[arr[i] - 1] negative.
+    for (int i = 0; i < size; i++) 
+    {
+        int x = abs(arr[i]);
+        if (x - 1 < size && arr[x - 1] >= 0)
+        {
+            arr[x - 1] = -arr[x - 1];
+        }
+    }
+
+    // Return the first index value at which is positive.
+    for (int i = 0; i < size; i++) 
+    {
+        if (arr[i] > 0) 
+        {
+            return i + 1;
+        }
+    }
+
+    return size + 1;
+}
+
+int firstMissing(int arr[], int n) 
+{
+    /*
+        Segregate the array such that positive elements goes to the left side of the
+        array and negative to the right side and return the last index of positive element.
+    */
+
+    int index = segregate(arr, n);
+
+    return findMissingPositive(arr, index);
+}
